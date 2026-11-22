@@ -32,9 +32,10 @@
     "step": {
       "init": {
         "title": "Biedronka – ustawienia",
-        "description": "Jak często sprawdzać nowe e-paragony (minimum 30 minut).",
+        "description": "Jak często sprawdzać nowe e-paragony (minimum 30 minut) i czy dzielić płatności kartą w Actual Budget na kategorie z paragonu (korzysta z integracji Actual Budget).",
         "data": {
-          "scan_minutes": "Odświeżanie co (min)"
+          "scan_minutes": "Odświeżanie co (min)",
+          "split_in_actual": "Dziel płatności w Actual Budget według paragonu"
         }
       }
     }
