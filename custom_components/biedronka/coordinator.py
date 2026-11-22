@@ -28,6 +28,8 @@ class BiedronkaCoordinator(DataUpdateCoordinator):
     async def _async_update_data(self):
         if self._db is None:
             self._db = await self._store.async_load() or {"receipts": {}}
+            for r in self._db["receipts"].values():
+                P.reclassify(r)
         db = self._db["receipts"]
         first = not self._db.get("init")
         new = []

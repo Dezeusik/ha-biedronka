@@ -1,7 +1,7 @@
 {
   "domain": "biedronka",
   "name": "Biedronka (e-paragony)",
-  "version": "0.1.0",
+  "version": "0.1.1",
   "documentation": "https://github.com/Dezeusik/ha-biedronka",
   "issue_tracker": "https://github.com/Dezeusik/ha-biedronka/issues",
   "codeowners": [

@@ -46,6 +46,18 @@ def receipt(raw: dict) -> dict:
     }
 
 
+def reclassify(r: dict) -> dict:
+    """Ponownie przypisuje grupy (po zmianie słownika w categories.py)."""
+    groups, cats = {}, {}
+    for i in r.get("pozycje") or []:
+        i["grupa"], i["kategoria"] = classify(i["nazwa"])
+        groups[i["grupa"]] = round(groups.get(i["grupa"], 0) + i["cena"], 2)
+        cats[i["kategoria"]] = round(cats.get(i["kategoria"], 0) + i["cena"], 2)
+    r["grupy"] = dict(sorted(groups.items(), key=lambda x: -x[1]))
+    r["kategorie"] = dict(sorted(cats.items(), key=lambda x: -x[1]))
+    return r
+
+
 def summary_line(r: dict, top: int = 4) -> str:
     parts = [f"{g} {v:.0f}" for g, v in list(r["grupy"].items())[:top]]
     return f"{r['suma']:.2f} zł → " + ", ".join(parts)

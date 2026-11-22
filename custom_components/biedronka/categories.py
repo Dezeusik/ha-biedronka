@@ -14,15 +14,15 @@ GROUPS: list[tuple[str, str, tuple[str, ...]]] = [
     ("Kaucja", "Drobne / różne", ("KAUCJA", "OPAKOWANIE ZWROTNE", "BUTELKA ZWR")),
     ("Torby", "Drobne / różne", ("TORBA", "REKLAMOWKA", "WOREK FOL")),
     ("Alkohol", "Jedzenie i chemia", ("PIWO", "WINO ", "WODKA", "WHISK", "LIKIER", "BRANDY", "RUM ", "GIN ",
-                                      "NALEWKA", "CYDR", "SZAMPAN", "PROSECCO", "TYSKIE", "ZUBR", "ZYWIEC",
-                                      "LECH ", "KOZEL", "HARNA", "WARKA", "OKOCIM", "PERLA", "SOPLICA",
+                                      "NALEWKA", "CYDR", "SZAMPAN", "PROSECCO", "TYSKIE", "ZUBR", "PIWO ZYWIEC",
+                                      "LECH ", "KOZEL", "HARNA", "WARKA", "OKOCIM", "SOPLICA",
                                       "ZOLADKOWA", "ZUBROWKA", "BOCIAN", "JACK D", "BALLANTINE")),
     ("Papierosy", "Drobne / różne", ("PAPIEROS", "L&M", "MARLBORO", "CHESTERFIELD", "IQOS", "HEETS", "TEREA",
                                      "WKLAD", "E-PAPIER", "TYTON", "GLO ")),
     ("Apteka i zdrowie", "Zdrowie i apteka", ("APAP", "IBUPROM", "IBUM", "PARACETAMOL", "NUROFEN", "WITAMIN",
                                               "MAGNEZ", "PLASTR", "BANDAZ", "TABL.", "SYROP", "TERMOMETR",
                                               "ELEKTROLIT", "PROBIOTYK", "MASECZK", "TEST CIAZ")),
-    ("Chemia i higiena", "Jedzenie i chemia", ("PAP.TOAL", "PAPIER TOAL", "RECZNIK PAP", "RECZ.PAP", "CHUSTECZ",
+    ("Chemia i higiena", "Jedzenie i chemia", ("PAP.TOAL", "PAP TOAL", "PAPIER TOAL", "PAP TOA", "REC PAP", "RECZ PAP", "RECZNIK PAP", "RECZ.PAP", "CHUSTECZ",
                                                "CHUST.", "PROSZEK", "KAPS.DO PR", "KAPSULKI DO PR", "PLYN DO",
                                                "PL.DO", "PLYN NACZ", "ZMYWAR", "TABL.DO ZM", "DOMESTOS",
                                                "CILLIT", "LUDWIK", "FAIRY", "VANISH", "PERWOLL", "LENOR",
@@ -79,8 +79,20 @@ GROUPS: list[tuple[str, str, tuple[str, ...]]] = [
 DEFAULT_GROUP = ("Jedzenie", "Jedzenie i chemia")
 
 
+_LOW = "a-ząćęłńóśźż"
+_UP = "A-ZĄĆĘŁŃÓŚŹŻ"
+
+
+def _split(s: str) -> str:
+    """Biedronka skleja słowa: „WinoPółwtBiaRie0,75l” → „Wino Półwt Bia Rie 0,75l”."""
+    s = re.sub(rf"(?<=[{_LOW}])(?=[{_UP}])", " ", s or "")
+    s = re.sub(rf"(?<=[{_LOW}{_UP}])(?=\d)", " ", s)
+    return s
+
+
 def _norm(s: str) -> str:
-    s = unicodedata.normalize("NFKD", s or "").encode("ascii", "ignore").decode().upper()
+    s = unicodedata.normalize("NFKD", _split(s)).replace("ł", "l").replace("Ł", "L")
+    s = s.encode("ascii", "ignore").decode().upper()
     return re.sub(r"\s+", " ", s)
 
 
