@@ -9,7 +9,7 @@ from homeassistant.core import callback
 from homeassistant.helpers.aiohttp_client import async_get_clientsession
 
 from .api import BiedronkaAuthError, BiedronkaClient, code_from_redirect, login_url, pkce_pair
-from .const import CONF_REFRESH_TOKEN, CONF_SCAN_MINUTES, DEFAULT_SCAN_MINUTES, DOMAIN, MIN_SCAN_MINUTES
+from .const import CONF_REFRESH_TOKEN, CONF_SCAN_MINUTES, CONF_SPLIT, DEFAULT_SCAN_MINUTES, DOMAIN, MIN_SCAN_MINUTES
 
 _LOGGER = logging.getLogger(__name__)
 _INTERVAL = vol.All(vol.Coerce(int), vol.Range(min=MIN_SCAN_MINUTES, max=1440))
@@ -92,4 +92,7 @@ class BiedronkaOptionsFlow(config_entries.OptionsFlow):
         if user_input is not None:
             return self.async_create_entry(data=user_input)
         cur = self.config_entry.options.get(CONF_SCAN_MINUTES, self.config_entry.data.get(CONF_SCAN_MINUTES, DEFAULT_SCAN_MINUTES))
-        return self.async_show_form(step_id="init", data_schema=vol.Schema({vol.Required(CONF_SCAN_MINUTES, default=int(cur)): _INTERVAL}))
+        split = self.config_entry.options.get(CONF_SPLIT, True)
+        return self.async_show_form(step_id="init", data_schema=vol.Schema({
+            vol.Required(CONF_SCAN_MINUTES, default=int(cur)): _INTERVAL,
+            vol.Required(CONF_SPLIT, default=bool(split)): bool}))

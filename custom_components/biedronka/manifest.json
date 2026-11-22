@@ -1,7 +1,7 @@
 {
   "domain": "biedronka",
   "name": "Biedronka (e-paragony)",
-  "version": "0.1.1",
+  "version": "0.2.0",
   "documentation": "https://github.com/Dezeusik/ha-biedronka",
   "issue_tracker": "https://github.com/Dezeusik/ha-biedronka/issues",
   "codeowners": [
@@ -11,6 +11,7 @@
   "iot_class": "cloud_polling",
   "requirements": [],
   "dependencies": [],
+  "after_dependencies": ["actualbudget"],
   "loggers": [
     "custom_components.biedronka"
   ]

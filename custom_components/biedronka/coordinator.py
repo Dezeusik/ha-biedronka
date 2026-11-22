@@ -11,7 +11,8 @@ from homeassistant.util import dt as dt_util
 
 from . import parser as P
 from .api import BiedronkaAuthError, BiedronkaClient
-from .const import DOMAIN, EVENT_RECEIPT, KEEP_RECEIPTS
+from . import actual_sync
+from .const import DOMAIN, EVENT_ACTUAL, EVENT_RECEIPT, KEEP_RECEIPTS
 
 _LOGGER = logging.getLogger(__name__)
 MAX_PAGES_FIRST = 5   # przy pierwszym uruchomieniu: ok. 2–3 miesiące historii
@@ -24,6 +25,7 @@ class BiedronkaCoordinator(DataUpdateCoordinator):
         self.client = client
         self._store = Store(hass, 1, f"{DOMAIN}_{entry_id}")
         self._db: dict | None = None
+        self.split_enabled = True
 
     async def _async_update_data(self):
         if self._db is None:
@@ -62,8 +64,31 @@ class BiedronkaCoordinator(DataUpdateCoordinator):
             for r in sorted(new, key=lambda x: x["data"] or ""):
                 self.hass.bus.async_fire(EVENT_RECEIPT, {**r, "podsumowanie": P.summary_line(r)})
         self._db["init"] = True
+        await self._split_in_actual(db)
         await self._store.async_save(self._db)
         return self._build(db)
+
+    async def _split_in_actual(self, db: dict) -> None:
+        """Dzieli płatności w Actual Budget (jeśli integracja actualbudget jest skonfigurowana)."""
+        if not self.split_enabled:
+            return
+        cfg = actual_sync.actual_config(self.hass)
+        if not cfg:
+            return
+        done = self._db.setdefault("actual", {})
+        recent = sorted(db.values(), key=lambda r: r["data"] or "", reverse=True)[:40]
+        try:
+            res = await self.hass.async_add_executor_job(
+                actual_sync.sync_receipts, cfg, self.hass.config.path(".storage", "biedronka_actual"), recent, done)
+        except Exception as e:  # noqa: BLE001
+            _LOGGER.warning("Biedronka → Actual: nie udało się podzielić płatności: %s", e)
+            return
+        for rid, out in res.items():
+            first_try = rid not in done
+            done[rid] = {**out, "proba": dt_util.now().isoformat()}
+            if out["status"] == "ok" or first_try:
+                r = db.get(rid, {})
+                self.hass.bus.async_fire(EVENT_ACTUAL, {"id": rid, "suma": r.get("suma"), "data": r.get("data"), **out})
 
     @staticmethod
     def _build(db: dict) -> dict:

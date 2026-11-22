@@ -13,4 +13,6 @@ DEFAULT_SCAN_MINUTES = 60
 MIN_SCAN_MINUTES = 30
 
 EVENT_RECEIPT = "biedronka_paragon"
+EVENT_ACTUAL = "biedronka_actual"
+CONF_SPLIT = "split_in_actual"
 KEEP_RECEIPTS = 400
