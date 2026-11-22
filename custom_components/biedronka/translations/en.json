@@ -1,0 +1,42 @@
+{
+  "config": {
+    "step": {
+      "user": {
+        "title": "Biedronka – połączenie z kontem",
+        "description": "1. W Chrome otwórz konsolę: **Cmd+Option+J** (Mac) lub **Ctrl+Shift+J** (Windows).\n2. W tej samej karcie otwórz [link logowania Biedronki]({url}) i zaloguj się numerem telefonu i kodem SMS (jeśli jesteś zalogowany na moja.biedronka.pl, przejdzie od razu).\n3. Strona się nie zmieni, ale w konsoli pojawi się czerwony komunikat *Failed to launch 'app://cma20.biedronka.pl…code=…'*. Skopiuj go całego i wklej poniżej – **w ciągu minuty**, bo kod szybko wygasa.\n\n{details}",
+        "data": {
+          "redirect": "Adres app://… (lub cały komunikat z konsoli)",
+          "scan_minutes": "Odświeżanie co (min)"
+        }
+      },
+      "reauth_confirm": {
+        "title": "Biedronka – zaloguj się ponownie",
+        "description": "Sesja Biedronki wygasła. Otwórz konsolę Chrome (**Cmd+Option+J**), potem [link logowania]({url}), zaloguj się i wklej komunikat *Failed to launch 'app://…'* poniżej.\n\n{details}",
+        "data": {
+          "redirect": "Adres app://… (lub cały komunikat z konsoli)"
+        }
+      }
+    },
+    "error": {
+      "no_code": "Nie znaleziono kodu – szczegóły nad formularzem",
+      "state": "Adres z innego logowania – szczegóły nad formularzem",
+      "auth": "Kod wygasł lub został odrzucony – szczegóły nad formularzem",
+      "connect": "Nie udało się połączyć z Biedronką – szczegóły nad formularzem"
+    },
+    "abort": {
+      "already_configured": "To konto jest już dodane",
+      "reauth_successful": "Zalogowano ponownie"
+    }
+  },
+  "options": {
+    "step": {
+      "init": {
+        "title": "Biedronka – ustawienia",
+        "description": "Jak często sprawdzać nowe e-paragony (minimum 30 minut).",
+        "data": {
+          "scan_minutes": "Odświeżanie co (min)"
+        }
+      }
+    }
+  }
+}
