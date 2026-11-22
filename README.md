@@ -33,3 +33,10 @@ Szkoła i biuro, Ubrania, Dom i narzędzia, Dla zwierząt, Papierosy, Kaucja, To
 `biedronka_paragon` – każdy nowy paragon: `id`, `data`, `suma`, `sklep`, `pozycje`, `grupy`, `kategorie`,
 `podsumowanie` (np. „187.40 zł → Jedzenie 120, Chemia i higiena 41, Słodycze i przekąski 26”).
 Przy pierwszym uruchomieniu integracja pobiera historię bez wysyłania zdarzeń.
+
+## Podział płatności w Actual Budget (od 0.2.0)
+Jeśli w HA działa integracja [Actual Budget](https://github.com/jlvcm/ha-actualbudget), Biedronka korzysta z jej
+danych logowania i po każdym nowym paragonie dzieli płatność kartą w Actual na kategorie z paragonu
+(np. „Jedzenie i chemia” + „Prezenty i zabawki”). Płatność szuka po kwocie i dacie (±3 dni) i po nazwie odbiorcy
+(BIEDRONKA / JERONIMO). Jeśli bank jeszcze jej nie zsynchronizował, integracja próbuje ponownie przez 10 dni.
+Wyłączysz to w opcjach integracji. Zdarzenie `biedronka_actual`: `status` (`ok` / `brak`), `podzial`, `powod`.
